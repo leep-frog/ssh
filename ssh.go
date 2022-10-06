@@ -55,8 +55,7 @@ func (g *GSH) Node() *command.Node {
 
 				// Create new ssh agent
 				bc := &command.BashCommand[[]string]{
-					Contents:      []string{createAgentContents},
-					ForwardStdout: true,
+					Contents: []string{createAgentContents},
 					Validators: []*command.ValidatorOption[[]string]{
 						command.Length[string, []string](2),
 					},
