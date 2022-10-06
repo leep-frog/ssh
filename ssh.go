@@ -8,10 +8,13 @@ import (
 )
 
 const (
-	agentPidEnv         = "SSH_AGENT_PID"
-	authSocketEnv       = "SSH_AUTH_SOCKET"
-	createAgentContents = "eval `ssh-agent` > /dev/null && echo $SSH_AGENT_PID && echo $SSH_AUTH_SOCKET"
-	killContents        = "ps | grep ssh-agent | awk '{ print $1 }' | xargs kill > /dev/null 2>&1"
+	agentPidEnv   = "SSH_AGENT_PID"
+	authSocketEnv = "SSH_AUTH_SOCK"
+	killContents  = "ps | grep ssh-agent | awk '{ print $1 }' | xargs kill > /dev/null 2>&1"
+)
+
+var (
+	createAgentContents = fmt.Sprintf("eval `ssh-agent` > /dev/null && echo $%s && echo $%s", agentPidEnv, authSocketEnv)
 )
 
 func CLI() *GSH {

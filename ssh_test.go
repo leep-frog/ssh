@@ -60,7 +60,7 @@ func TestSSHExecution(t *testing.T) {
 				WantExecuteData: &command.ExecuteData{
 					Executable: []string{
 						`export SSH_AGENT_PID="123"`,
-						`export SSH_AUTH_SOCKET="some-file"`,
+						`export SSH_AUTH_SOCK="some-file"`,
 					},
 				},
 			},
@@ -111,7 +111,7 @@ func TestSSHExecution(t *testing.T) {
 				WantExecuteData: &command.ExecuteData{
 					Executable: []string{
 						`export SSH_AGENT_PID="789"`,
-						`export SSH_AUTH_SOCKET="some-other-file"`,
+						`export SSH_AUTH_SOCK="some-other-file"`,
 						`ssh-add`,
 					},
 				},
@@ -147,7 +147,7 @@ func TestSSHExecution(t *testing.T) {
 				WantExecuteData: &command.ExecuteData{
 					Executable: []string{
 						`export SSH_AGENT_PID="789"`,
-						`export SSH_AUTH_SOCKET="some-other-file"`,
+						`export SSH_AUTH_SOCK="some-other-file"`,
 						`ssh-add`,
 					},
 				},
@@ -183,7 +183,7 @@ func TestSSHExecution(t *testing.T) {
 				WantExecuteData: &command.ExecuteData{
 					Executable: []string{
 						`export SSH_AGENT_PID="789"`,
-						`export SSH_AUTH_SOCKET="some-other-file"`,
+						`export SSH_AUTH_SOCK="some-other-file"`,
 						`ssh-add`,
 					},
 				},
