@@ -52,7 +52,8 @@ func (g *GSH) Node() *command.Node {
 
 				// Create new ssh agent
 				bc := &command.BashCommand[[]string]{
-					Contents: []string{createAgentContents},
+					Contents:      []string{createAgentContents},
+					ForwardStdout: true,
 					Validators: []*command.ValidatorOption[[]string]{
 						command.Length[string, []string](2),
 					},
@@ -66,7 +67,6 @@ func (g *GSH) Node() *command.Node {
 				g.changed = true
 
 				// Set environment variables and run ssh-add
-				fmt.Println("donzo")
 				return []string{
 					fmt.Sprintf("export %s=%q", agentPidEnv, g.AgentPID),
 					fmt.Sprintf("export %s=%q", authSocketEnv, g.AuthSocket),
