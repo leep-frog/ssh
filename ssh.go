@@ -45,23 +45,32 @@ func (g *GSH) Node() *command.Node {
 			command.ExecutableNode(func(o command.Output, d *command.Data) ([]string, error) {
 				// If a process already exists, then just point to that process.
 				if g.checkProcess() {
-					return []string{
+					resp := []string{
 						fmt.Sprintf("export %s=%q", agentPidEnv, g.AgentPID),
 						fmt.Sprintf("export %s=%q", authSocketEnv, g.AuthSocket),
-					}, nil
-				}
+					}
 
-				fmt.Println("Creating ssh agent")
+					// Confirm that an ssh identity is provided
+					bc := &command.BashCommand[[]string]{
+						Contents: []string{"ssh-add -l"},
+					}
+					if _, err := bc.Run(nil, &command.Data{}); err != nil {
+						// If no identity is provided, then add one
+						resp = append(resp, "ssh-add")
+					}
+
+					// Otherwise, just upate
+					return resp, nil
+				}
 
 				// Create new ssh agent
 				bc := &command.BashCommand[[]string]{
 					Contents: []string{createAgentContents},
 					Validators: []*command.ValidatorOption[[]string]{
-						command.Length[string, []string](2),
+						command.Length[string, []string](3),
 					},
 				}
 				vars, err := bc.Run(nil, d)
-				fmt.Println("Response", vars, " |||| ", err)
 				if err != nil {
 					return nil, o.Annotatef(err, "failed to create new ssh agent")
 				}
@@ -88,7 +97,6 @@ func (g *GSH) checkProcess() bool {
 			fmt.Sprintf("ps -p %q", g.AgentPID),
 		},
 	}
-	fmt.Println("Running ps command")
 	_, err := bc.Run(nil, &command.Data{})
 	return err == nil
 }

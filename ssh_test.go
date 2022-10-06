@@ -36,7 +36,7 @@ func TestSSHExecution(t *testing.T) {
 		},
 		// Default node (ssh-agent related) tests.
 		{
-			name: "Sets environment variables if already exists",
+			name: "Sets environment variables if already exists and identity added",
 			gsh: &GSH{
 				AgentPID:   "123",
 				AuthSocket: "some-file",
@@ -48,6 +48,11 @@ func TestSSHExecution(t *testing.T) {
 						Stdout: []string{"stdout output"},
 						Stderr: []string{"stderr output"},
 					},
+					// ssh-add -l
+					{
+						Stdout: []string{"sa stdout output"},
+						Stderr: []string{"sa stderr output"},
+					},
 				},
 				WantRunContents: [][]string{
 					{
@@ -56,11 +61,53 @@ func TestSSHExecution(t *testing.T) {
 						"set -o pipefail",
 						`ps -p "123"`,
 					},
+					{
+						"set -e",
+						"set -o pipefail",
+						`ssh-add -l`,
+					},
 				},
 				WantExecuteData: &command.ExecuteData{
 					Executable: []string{
 						`export SSH_AGENT_PID="123"`,
 						`export SSH_AUTH_SOCK="some-file"`,
+					},
+				},
+			},
+		},
+		{
+			name: "Adds identity if necessary",
+			gsh: &GSH{
+				AgentPID:   "123",
+				AuthSocket: "some-file",
+			},
+			etc: &command.ExecuteTestCase{
+				RunResponses: []*command.FakeRun{
+					// checkProcess (also verify stdout and stderr isn't outputted).
+					{},
+					// ssh-add -l
+					{
+						Err: fmt.Errorf("argh"),
+					},
+				},
+				WantRunContents: [][]string{
+					{
+						// TODO: These "sets" shouldn't be included by default
+						"set -e",
+						"set -o pipefail",
+						`ps -p "123"`,
+					},
+					{
+						"set -e",
+						"set -o pipefail",
+						`ssh-add -l`,
+					},
+				},
+				WantExecuteData: &command.ExecuteData{
+					Executable: []string{
+						`export SSH_AGENT_PID="123"`,
+						`export SSH_AUTH_SOCK="some-file"`,
+						`ssh-add`,
 					},
 				},
 			},
@@ -86,6 +133,7 @@ func TestSSHExecution(t *testing.T) {
 						Stdout: []string{
 							"789",
 							"some-other-file",
+							"",
 						},
 						Stderr: []string{
 							"blah blah",
@@ -106,8 +154,6 @@ func TestSSHExecution(t *testing.T) {
 						createAgentContents,
 					},
 				},
-				// TODO: Should this have a newline?
-				WantStderr: "blah blah",
 				WantExecuteData: &command.ExecuteData{
 					Executable: []string{
 						`export SSH_AGENT_PID="789"`,
@@ -133,6 +179,7 @@ func TestSSHExecution(t *testing.T) {
 						Stdout: []string{
 							"789",
 							"some-other-file",
+							"",
 						},
 					},
 				},
@@ -169,6 +216,7 @@ func TestSSHExecution(t *testing.T) {
 						Stdout: []string{
 							"789",
 							"some-other-file",
+							"",
 						},
 					},
 				},
@@ -207,6 +255,7 @@ func TestSSHExecution(t *testing.T) {
 							"un",
 							"deux",
 							"trois",
+							"quatre",
 						},
 					},
 				},
@@ -224,8 +273,8 @@ func TestSSHExecution(t *testing.T) {
 						createAgentContents,
 					},
 				},
-				WantErr:    fmt.Errorf(`failed to create new ssh agent: validation for "" failed: [Length] length must be exactly 2`),
-				WantStderr: "failed to create new ssh agent: validation for \"\" failed: [Length] length must be exactly 2\n",
+				WantErr:    fmt.Errorf(`failed to create new ssh agent: validation for "" failed: [Length] length must be exactly 3`),
+				WantStderr: "failed to create new ssh agent: validation for \"\" failed: [Length] length must be exactly 3\n",
 			},
 		},
 		{
