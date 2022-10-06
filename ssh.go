@@ -38,7 +38,14 @@ func (g *GSH) Node() *command.Node {
 	return command.AsNode(&command.BranchNode{
 		Branches: map[string]*command.Node{
 			"kill k": command.SerialNodes(
-				command.SimpleExecutableNode(killContents),
+				command.ExecutableNode(func(o command.Output, d *command.Data) ([]string, error) {
+					g.AgentPID = ""
+					g.AuthSocket = ""
+					g.changed = true
+					return []string{
+						killContents,
+					}, nil
+				}),
 			),
 		},
 		Default: command.SerialNodes(

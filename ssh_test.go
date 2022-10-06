@@ -18,6 +18,21 @@ func TestSSHExecution(t *testing.T) {
 		// Kill tests
 		{
 			name: "kills",
+			want: CLI(),
+			etc: &command.ExecuteTestCase{
+				Args: []string{"kill"},
+				WantExecuteData: &command.ExecuteData{
+					Executable: []string{killContents},
+				},
+			},
+		},
+		{
+			name: "kill unsets vars",
+			gsh: &GSH{
+				AgentPID:   "123",
+				AuthSocket: "file",
+			},
+			want: &GSH{},
 			etc: &command.ExecuteTestCase{
 				Args: []string{"kill"},
 				WantExecuteData: &command.ExecuteData{
@@ -27,6 +42,7 @@ func TestSSHExecution(t *testing.T) {
 		},
 		{
 			name: "kills with k",
+			want: CLI(),
 			etc: &command.ExecuteTestCase{
 				Args: []string{"k"},
 				WantExecuteData: &command.ExecuteData{
