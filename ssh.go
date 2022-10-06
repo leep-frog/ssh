@@ -10,7 +10,7 @@ import (
 const (
 	agentPidEnv         = "SSH_AGENT_PID"
 	authSocketEnv       = "SSH_AUTH_SOCKET"
-	createAgentContents = "eval `ssh-agent` > /dev/null && echo $SSH_AUTH_SOCK && echo $SSH_AGENT_PID"
+	createAgentContents = "eval `ssh-agent` > /dev/null && echo $SSH_AGENT_PID && echo $SSH_AUTH_SOCKET"
 	killContents        = "ps | grep ssh-agent | awk '{ print $1 }' | xargs kill > /dev/null 2>&1"
 )
 
