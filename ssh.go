@@ -59,9 +59,10 @@ func (g *GSH) Node() *command.Node {
 
 					// Confirm that an ssh identity is provided
 					bc := &command.BashCommand[[]string]{
-						Contents: []string{"ssh-add -l"},
+						// We need to append resp so the bash subshell has the proper environment variables set.
+						Contents: append(resp, "ssh-add -l"),
 					}
-					if _, err := bc.Run(nil, &command.Data{}); err != nil {
+					if _, err := bc.Run(o, &command.Data{}); err != nil {
 						// If no identity is provided, then add one
 						resp = append(resp, "ssh-add")
 					}
