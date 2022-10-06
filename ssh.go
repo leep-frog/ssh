@@ -61,7 +61,7 @@ func (g *GSH) Node() *command.Node {
 						command.Length[string, []string](2),
 					},
 				}
-				vars, err := bc.Run(o, d)
+				vars, err := bc.Run(nil, d)
 				fmt.Println("Response", vars, " |||| ", err)
 				if err != nil {
 					return nil, o.Annotatef(err, "failed to create new ssh agent")
