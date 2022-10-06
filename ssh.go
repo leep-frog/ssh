@@ -48,6 +48,8 @@ func (g *GSH) Node() *command.Node {
 					}, nil
 				}
 
+				fmt.Println("Creating ssh agent")
+
 				// Create new ssh agent
 				bc := &command.BashCommand[[]string]{
 					Contents: []string{createAgentContents},
@@ -56,6 +58,7 @@ func (g *GSH) Node() *command.Node {
 					},
 				}
 				vars, err := bc.Run(o, d)
+				fmt.Println("Response", vars, " |||| ", err)
 				if err != nil {
 					return nil, o.Annotatef(err, "failed to create new ssh agent")
 				}
@@ -63,6 +66,7 @@ func (g *GSH) Node() *command.Node {
 				g.changed = true
 
 				// Set environment variables and run ssh-add
+				fmt.Println("donzo")
 				return []string{
 					fmt.Sprintf("export %s=%q", agentPidEnv, g.AgentPID),
 					fmt.Sprintf("export %s=%q", authSocketEnv, g.AuthSocket),
@@ -82,6 +86,7 @@ func (g *GSH) checkProcess() bool {
 			fmt.Sprintf("ps -p %q", g.AgentPID),
 		},
 	}
+	fmt.Println("Running ps command")
 	_, err := bc.Run(nil, &command.Data{})
 	return err == nil
 }
