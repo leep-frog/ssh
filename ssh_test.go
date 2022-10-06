@@ -15,6 +15,26 @@ func TestSSHExecution(t *testing.T) {
 		etc  *command.ExecuteTestCase
 		want *GSH
 	}{
+		// Kill tests
+		{
+			name: "kills",
+			etc: &command.ExecuteTestCase{
+				Args: []string{"kill"},
+				WantExecuteData: &command.ExecuteData{
+					Executable: []string{killContents},
+				},
+			},
+		},
+		{
+			name: "kills with k",
+			etc: &command.ExecuteTestCase{
+				Args: []string{"k"},
+				WantExecuteData: &command.ExecuteData{
+					Executable: []string{killContents},
+				},
+			},
+		},
+		// Default node (ssh-agent related) tests.
 		{
 			name: "Sets environment variables if already exists",
 			gsh: &GSH{
