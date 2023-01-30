@@ -2,7 +2,7 @@ module github.com/leep-frog/ssh
 
 go 1.18
 
-require github.com/leep-frog/command v0.0.0-20221006191423-2647aa173692
+require github.com/leep-frog/command v0.0.0-20230130194339-5192720eb044
 
 require (
 	github.com/google/go-cmp v0.5.5 // indirect

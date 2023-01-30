@@ -34,9 +34,9 @@ func (g *GSH) Name() string {
 func (g *GSH) Setup() []string { return nil }
 func (g *GSH) Changed() bool   { return g.changed }
 
-func (g *GSH) Node() *command.Node {
-	return command.AsNode(&command.BranchNode{
-		Branches: map[string]*command.Node{
+func (g *GSH) Node() command.Node {
+	return &command.BranchNode{
+		Branches: map[string]command.Node{
 			"kill k": command.SerialNodes(
 				command.ExecutableNode(func(o command.Output, d *command.Data) ([]string, error) {
 					g.AgentPID = ""
@@ -93,7 +93,7 @@ func (g *GSH) Node() *command.Node {
 				}, nil
 			}),
 		),
-	})
+	}
 }
 
 func (g *GSH) checkProcess() bool {

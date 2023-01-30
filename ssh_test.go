@@ -80,9 +80,12 @@ func TestSSHExecution(t *testing.T) {
 					{
 						"set -e",
 						"set -o pipefail",
+						`export SSH_AGENT_PID="123"`,
+						`export SSH_AUTH_SOCK="some-file"`,
 						`ssh-add -l`,
 					},
 				},
+				WantStderr: "sa stderr output",
 				WantExecuteData: &command.ExecuteData{
 					Executable: []string{
 						`export SSH_AGENT_PID="123"`,
@@ -116,6 +119,8 @@ func TestSSHExecution(t *testing.T) {
 					{
 						"set -e",
 						"set -o pipefail",
+						`export SSH_AGENT_PID="123"`,
+						`export SSH_AUTH_SOCK="some-file"`,
 						`ssh-add -l`,
 					},
 				},
