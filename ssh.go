@@ -38,7 +38,7 @@ func (g *GSH) Node() command.Node {
 	return &command.BranchNode{
 		Branches: map[string]command.Node{
 			"kill k": command.SerialNodes(
-				command.ExecutableNode(func(o command.Output, d *command.Data) ([]string, error) {
+				command.ExecutableProcessor(func(o command.Output, d *command.Data) ([]string, error) {
 					g.AgentPID = ""
 					g.AuthSocket = ""
 					g.changed = true
@@ -49,7 +49,7 @@ func (g *GSH) Node() command.Node {
 			),
 		},
 		Default: command.SerialNodes(
-			command.ExecutableNode(func(o command.Output, d *command.Data) ([]string, error) {
+			command.ExecutableProcessor(func(o command.Output, d *command.Data) ([]string, error) {
 				// If a process already exists, then just point to that process.
 				if g.checkProcess() {
 					resp := []string{
